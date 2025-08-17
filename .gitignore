@@ -1,0 +1,11 @@
+# Node
+node_modules
+npm-debug.log
+
+# Archivos subidos / DB
+uploads
+impr.db
+
+# Vite
+dist
+.env
