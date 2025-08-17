@@ -1,0 +1,10 @@
+{
+  "color_mode": { "BN": 0, "Color": 80 },
+  "duplex": { "simplex": 0, "duplex": 50 },
+  "paper_type": { "normal75": 0, "opalina200": 150 },
+  "anillado": { "none": 0, "plastico": 1200, "metalico": 1800 },
+  "photo_size": { "none": 0, "small": 50, "medium": 100, "large": 200 },
+  "delivery": { "retiro": 0, "normal": 2500, "express": 4500 },
+  "per_page_base": 50,
+  "image_page_extra": 30
+}

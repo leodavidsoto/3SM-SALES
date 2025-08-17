@@ -1,0 +1,37 @@
+services:
+  - type: web
+    name: impresiones-sos-api
+    env: docker
+    rootDir: server
+    plan: free
+    autoDeploy: true
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 10000
+      - key: BASE_URL
+        value: https://impresiones-sos-api.onrender.com
+      # SMTP / Twilio si ya los tienes:
+      # - key: SMTP_HOST
+      #   value: smtp.gmail.com
+      # - key: SMTP_PORT
+      #   value: "465"
+      # - key: SMTP_SECURE
+      #   value: "true"
+      # - key: SMTP_USER
+      #   value: tu_correo@gmail.com
+      # - key: SMTP_PASS
+      #   value: tu_app_password
+      # - key: EMAIL_FROM
+      #   value: "Impresiones SOS <tu_correo@gmail.com>"
+      # - key: EMAIL_TO
+      #   value: tu_correo@gmail.com
+      # - key: TWILIO_ACCOUNT_SID
+      #   value: ACxxxx
+      # - key: TWILIO_AUTH_TOKEN
+      #   value: xxxx
+      # - key: TWILIO_WHATSAPP_FROM
+      #   value: whatsapp:+14155238886
+      # - key: ADMIN_WHATSAPP_TO
+      #   value: whatsapp:+569xxxxxxxx

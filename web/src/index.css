@@ -1,0 +1,6 @@
+/* Tailwind v4 */
+@import "tailwindcss";
+
+/* Helpers de estilo */
+.glass { @apply bg-white/5 backdrop-blur-md border border-white/10 rounded-2xl shadow-xl; }
+.neon { text-shadow: 0 0 10px rgba(13,143,255,.7), 0 0 20px rgba(13,143,255,.4); }
