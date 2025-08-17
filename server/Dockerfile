@@ -7,18 +7,14 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 
 WORKDIR /app
 
-# Copia package.json / package-lock.json primero para cache
 COPY package*.json ./
-# Si usas "type": "module" en package.json, Node 20 ya soporta ESM
 RUN npm ci --omit=dev
 
-# Copia el resto del código
 COPY . .
 
-# Crea carpeta de uploads (efímera en free)
 RUN mkdir -p /app/uploads
 
-# Render asigna el puerto por la variable $PORT
+# Render inyecta PORT pero exponemos uno por defecto
 ENV PORT=10000
 EXPOSE 10000
 
