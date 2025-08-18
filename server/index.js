@@ -6,6 +6,8 @@ import Database from 'better-sqlite3'
 import dotenv from 'dotenv'
 import { execFile } from 'child_process'
 import { promisify } from 'util'
+import cors from 'cors'
+import mime from 'mime-types'
 
 dotenv.config()
 const execFileAsync = promisify(execFile)
@@ -15,11 +17,42 @@ const PORT = process.env.PORT || 4000
 const UPLOAD_DIR = path.join(process.cwd(), 'uploads')
 if (!fs.existsSync(UPLOAD_DIR)) fs.mkdirSync(UPLOAD_DIR, { recursive: true })
 
+// ===== Middlewares base =====
 app.use(express.json())
-// servir archivos subidos públicamente (para compartir PDF por link si quieres)
-app.use('/uploads', express.static(UPLOAD_DIR))
 
-// --- multer ---
+// CORS fuerte (permite consumir desde Vercel/iOS)
+app.use(
+  cors({
+    origin: '*',
+    methods: ['GET', 'POST', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization'],
+  })
+)
+
+// Servir /uploads con headers compatibles iOS (PDF inline, CORS, CORP)
+app.use(
+  '/uploads',
+  (req, res, next) => {
+    res.setHeader('Access-Control-Allow-Origin', '*')
+    res.setHeader('Cross-Origin-Resource-Policy', 'cross-origin')
+    res.setHeader('Cross-Origin-Opener-Policy', 'same-origin-allow-popups')
+    res.setHeader('Cross-Origin-Embedder-Policy', 'unsafe-none')
+    next()
+  },
+  express.static(UPLOAD_DIR, {
+    setHeaders: (res, filePath) => {
+      const type = mime.lookup(filePath) || 'application/octet-stream'
+      res.setHeader('Content-Type', type)
+      // iOS prefiere inline para visualizar PDFs en visor nativo
+      if (type === 'application/pdf') {
+        res.setHeader('Content-Disposition', 'inline')
+      }
+      res.setHeader('Cache-Control', 'public, max-age=3600')
+    },
+  })
+)
+
+// ===== Multer (subidas) =====
 const storage = multer.diskStorage({
   destination: (req, file, cb) => cb(null, UPLOAD_DIR),
   filename: (req, file, cb) => {
@@ -29,7 +62,7 @@ const storage = multer.diskStorage({
 })
 const upload = multer({ storage })
 
-// --- DB ---
+// ===== DB =====
 const db = new Database(path.join(process.cwd(), 'impr.db'))
 db.pragma('journal_mode = WAL')
 db.prepare(`
@@ -51,7 +84,7 @@ db.prepare(`
   )
 `).run()
 
-// ---------- Helpers de análisis ----------
+// ===== Helpers de análisis (PDF/images) =====
 function classifyImageSize(px) {
   if (px >= 1_000_000) return 'large'   // >= 1MP
   if (px >= 300_000)   return 'medium'  // 0.3–1MP
@@ -59,22 +92,17 @@ function classifyImageSize(px) {
   return 'none'
 }
 
-// Obtiene páginas reales con `pdfinfo`
 async function getPdfPageCount(pdfPath) {
-  // Salida típica incluye línea "Pages:          6"
   const { stdout } = await execFileAsync('pdfinfo', [pdfPath])
-  const m = stdout.split('\n').find(l => /^Pages:\s+/i.test(l))
-  if (!m) return 1
-  const num = parseInt(m.replace(/[^0-9]/g, ''), 10)
+  const line = stdout.split('\n').find(l => /^Pages:\s+/i.test(l))
+  if (!line) return 1
+  const num = parseInt(line.replace(/[^0-9]/g, ''), 10)
   return Number.isFinite(num) ? num : 1
 }
 
-// Lista imágenes embebidas con `pdfimages -list`
 async function analyzePdfImages(pdfPath) {
   const { stdout } = await execFileAsync('pdfimages', ['-list', pdfPath])
   const lines = stdout.split('\n').map(s => s.trim()).filter(Boolean)
-
-  // Buscar encabezado
   let headerIndex = lines.findIndex(l => /^page\b/i.test(l))
   if (headerIndex === -1) {
     headerIndex = lines.findIndex(l => l.toLowerCase().includes('width') && l.toLowerCase().includes('height'))
@@ -88,7 +116,7 @@ async function analyzePdfImages(pdfPath) {
     const page = parseInt(cols[0], 10)
     const width = parseInt(cols[3], 10)
     const height = parseInt(cols[4], 10)
-    const color = (cols[5] || '').toLowerCase() // gray/rgb/cmyk...
+    const color = (cols[5] || '').toLowerCase()
     if (Number.isFinite(page) && Number.isFinite(width) && Number.isFinite(height)) {
       images.push({ page, width, height, color, pixels: width * height })
     }
@@ -106,7 +134,6 @@ async function analyzePdfImages(pdfPath) {
   return { images, pagesWithImages, maxPixels, maxImageCategory, hasColor, perPageImageCounts }
 }
 
-// Para JPG/PNG subidos directamente
 async function analyzeRasterImage(absPath) {
   const sharp = (await import('sharp')).default
   const meta = await sharp(absPath).metadata()
@@ -126,17 +153,17 @@ async function analyzeRasterImage(absPath) {
   }
 }
 
-// ---------- Rutas ----------
+// ===== Rutas =====
 app.get('/', (_, res) => res.json({ ok: true, name: 'Impresiones SOS API', version: '1.1.0' }))
 
-// Analizar archivo (PDF/imagen/otros)
+// Analizar archivo
 app.post('/api/analyze', upload.single('file'), async (req, res) => {
   try {
     if (!req.file) return res.status(400).json({ error: 'Falta archivo' })
 
     const file = {
       name: req.file.originalname,
-      path: req.file.path,        // absoluta
+      path: req.file.path,
       storedName: req.file.filename,
       mimeType: req.file.mimetype,
       size: req.file.size,
@@ -153,9 +180,7 @@ app.post('/api/analyze', upload.single('file'), async (req, res) => {
     }
 
     if (req.file.mimetype === 'application/pdf') {
-      // Páginas reales
       analysis.pages = await getPdfPageCount(file.path)
-      // Imágenes embebidas (si falla, seguimos con análisis básico)
       try {
         const r = await analyzePdfImages(file.path)
         analysis.pagesWithImages   = r.pagesWithImages
@@ -165,13 +190,12 @@ app.post('/api/analyze', upload.single('file'), async (req, res) => {
         analysis.perPageImageCounts= r.perPageImageCounts
         analysis.isTextOnly        = r.pagesWithImages === 0
       } catch (err) {
-        console.warn('pdfimages falló, continuando con análisis básico:', err.message)
+        console.warn('pdfimages falló, análisis básico:', err.message)
       }
     } else if (req.file.mimetype.startsWith('image/')) {
       const r = await analyzeRasterImage(file.path)
       analysis = { ...analysis, ...r }
     } else {
-      // DOC/DOCX/TXT: heurística básica
       analysis = { ...analysis, pages: 1, isTextOnly: true }
     }
 
@@ -182,7 +206,7 @@ app.post('/api/analyze', upload.single('file'), async (req, res) => {
   }
 })
 
-// Crear orden (mantén tu lógica de cálculo previa o la que acordamos)
+// Crear orden (ejemplo básico: guarda los datos que envía el frontend)
 app.post('/api/order', (req, res) => {
   try {
     const {
@@ -239,7 +263,7 @@ app.post('/api/order', (req, res) => {
   }
 })
 
-// (opcional) listado para tu panel admin
+// Listado para admin (simple)
 app.get('/api/orders', (req, res) => {
   try {
     const rows = db.prepare(`
