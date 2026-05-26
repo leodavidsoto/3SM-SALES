@@ -1,0 +1,63 @@
+tipo,nombre,ciudad,email,telefono,contacto,cargo,fuente,notas
+casino,Casino Dreams Monticello,San Francisco de Mostazal,servicioalcliente@dreams.cl,600 424 0000,,Gerencia de Entretenimiento,web,El casino más grande de Latinoamérica. Gran Arena Monticello. Contactar depto. entretenimiento/shows.
+casino,Casino Dreams Temuco,Temuco,,+56 45 240 0000,,Coordinador de Shows,web,Av. Alemania 0945. Programación regular de shows y eventos.
+casino,Casino Dreams Valdivia,Valdivia,,,Coordinador de Entretenimiento,,web,Carampangue 190. Contactar via dreams.cl
+casino,Casino Dreams Iquique,Iquique,,,Coordinador de Shows,,web,Av. Arturo Prat Chacón 2755. Shows frecuentes fines de semana.
+casino,Casino Dreams Puerto Varas,Puerto Varas,,,Coordinador de Entretenimiento,,web,Destino turístico. Alta demanda de shows en temporada.
+casino,Casino Dreams Coyhaique,Coyhaique,,,Coordinador de Shows,,web,coyhaique.dreams.cl. Zona con alta demanda de entretenimiento.
+casino,Casino Dreams Punta Arenas,Punta Arenas,,,Coordinador de Entretenimiento,,web,O'Higgins 1235. Zona austral con poca oferta musical.
+casino,Hard Rock Cafe Santiago,Santiago,,+56 2 2707 0100,,Gerente de Eventos,web,Costanera Center. Shows en vivo regulares.
+casino,Bar Ramblas,Santiago,,,Encargado de Eventos,,web,+18 años en Santiago. Shows en vivo y DJ sets. ramblas.cl
+casino,Bar Margarita,Santiago,,,Encargado de Eventos,,web,Constitución 36 Patio Bellavista. Shows en vivo jue-sáb.
+productora,Agencia Click,Santiago,magdalena@agenciaclick.cl,+56 2 2638 3686,Magdalena Tapia,Directora Ejecutiva,web,San Antonio 427 of. 714. Eventos corporativos y comunicación.
+productora,F. Producciones Santiago,Santiago,F.produccionessantiago@gmail.com,+56 9 6538 3591,,Producción General,web,Producción creativa y técnica para eventos corporativos y congresos.
+productora,LaPizarra,Santiago,sebastian@somoslapizarra.cl,+56 9 5841 9326,Sebastián,,web,Agencia creativa y productora de eventos corporativos.
+productora,Zitta Producciones,Santiago,contacto@zittaproducciones.cl,+56 9 8157 6346,,Producción,web,García Reyes 259. Eventos corporativos y policulturales.
+productora,AVAD Eventos,Santiago,audio@avad.cl,+56 9 9362 3059,,Producción Audiovisual,web,Fontana Rosa 6731 Las Condes.
+productora,Puntal Producciones,Santiago,,,Gerente de Producción,,web,Av. Pdte. Kennedy Lateral 5600 of. 709. +25 años de experiencia.
+productora,VIPEVEN,Santiago,,,Coordinador de Eventos,,web,Productora eventos Santiago - Viña del Mar - Rancagua.
+productora,Tijerales Chile,Santiago,,,Coordinador de Producción,,web,productoraeventos.cl. Servicios empresariales.
+boda,ANAWEP Chile (Asociación),Santiago,anawepchile@gmail.com,,,Directora,web,Asociación de Wedding Planners de Chile. Llave para acceder a sus miembros.
+boda,Perfect Wedding,Santiago,,,Carolina Lorduy,Wedding Planner,web,+10 años de experiencia. perfectwedding.cl
+boda,Wedding Planner Chile (WPCH),Santiago,,,Andrea / Mona,Wedding Planner,web,Las Condes. wpch.cl
+boda,Andrea Wedding Planner Chile,Santiago,,,Andrea,,instagram,@wedding_planner_chile
+boda,Wedding Planner en Chile,Santiago,,,,,web,weddingplannerenchile.cl. Bodas y playa.
+boda,Weddy Chile,Santiago,,,,,web,weddy.cl. Plataforma directorio. Registrarse como proveedor musical.
+boda,matrimonios.cl,Santiago,,,,,web,Directorio. Solicitar aparecer como proveedor musical referenciado.
+empresa,Cencosud S.A.,Santiago,,,Gerente de RRHH,,web,Holding retail. Fiestas corporativas masivas.
+empresa,Falabella,Santiago,,,Gerente de RRHH,,web,Holding retail. Eventos corporativos de gran escala.
+empresa,Sodimac / Corona,Santiago,,,Gerente de RRHH,,web,Eventos de fin de año para equipos grandes.
+empresa,Entel,Santiago,,,Coordinador de Eventos Internos,,web,Empresa de telecomunicaciones.
+empresa,BancoEstado,Santiago,,,Coordinador de Eventos RRHH,,web,Banco público. Fiestas de fin de año para empleados.
+empresa,Banco Santander Chile,Santiago,,,Coordinador de Eventos,,web,Gran plantilla. Eventos corporativos de alta factura.
+empresa,Copec,Santiago,,,Gerente de RRHH,,web,Empresa energética. Eventos corporativos anuales.
+empresa,CODELCO,Santiago,,,Coordinador de Eventos,,web,Empresa minera estatal. Equipos en Santiago y regiones.
+empresa,Latam Airlines,Santiago,,,Gerente de Bienestar,,web,Gran cantidad de empleados. Eventos corporativos.
+empresa,Claro Chile,Santiago,,,Coordinador de Eventos RRHH,,web,Telecomunicaciones. Fiestas de fin de año.
+empresa,Hilaria Centro de Eventos,Santiago,,,Coordinador de Eventos,,web,hilaria.cl. Centro de eventos corporativos. Buscan proveedores musicales.
+empresa,Hotel AWA Eventos,Santiago,,,Coordinador de Eventos,,web,hotelawa.cl. Eventos corporativos a medida.
+hotel,Hotel W Santiago,Santiago,,,Gerente de Eventos,,web,Hotel de lujo. Shows en lobby y eventos privados.
+hotel,Hotel Mandarin Oriental Santiago,Santiago,,,Coordinador de Entretenimiento,,web,Hotel 5 estrellas. Amenización de eventos de alta gama.
+hotel,Hotel Ritz-Carlton Santiago,Santiago,,,Coordinador de Eventos,,web,Hotel 5 estrellas Las Condes. Bodas y eventos de lujo.
+hotel,Hotel Cumbres Lastarria,Santiago,,,Encargado de Eventos,,web,Boutique hotel. Eventos íntimos y privados.
+hotel,Hotel Cumbres Puerto Varas,Puerto Varas,,,Coordinador de Eventos,,web,Temporada alta dic-mar. hotelcumbres.cl
+hotel,Hotel Dreams Temuco,Temuco,,,Coordinador de Entretenimiento,,web,Hotel del casino. Ya conocen el trabajo de 3SM en el circuito Enjoy.
+hotel,Hotel & Spa Dreams Valdivia,Valdivia,,,Coordinador de Eventos,,web,Turismo de alto nivel.
+hotel,The Singular Santiago,Santiago,,,Encargado de Eventos,,web,Hotel boutique de lujo. Eventos privados exclusivos.
+hotel,Hotel NH Collection Plaza Santiago,Santiago,,,Coordinador de Eventos,,web,Hotel de negocios. Eventos corporativos frecuentes.
+municipal,Municipalidad de Santiago,Santiago,,,Secretario de Cultura,,web,Dirección de Cultura y Educación.
+municipal,Municipalidad de Providencia,Santiago,,,Coordinador de Cultura,,web,Alta inversión en programación cultural.
+municipal,Municipalidad de Las Condes,Santiago,,,Encargado de Eventos,,web,Eventos culturales y comunitarios frecuentes.
+municipal,Municipalidad de Ñuñoa,Santiago,,,Coordinador de Cultura,,web,Gran tradición cultural. Fiestas de barrio.
+municipal,Municipalidad de Viña del Mar,Viña del Mar,,,Secretario de Cultura,,web,Ciudad turística. Programación cultural anual activa.
+municipal,Municipalidad de Valparaíso,Valparaíso,,,Coordinador de Cultura,,web,Ciudad patrimonio UNESCO. Fuerte programación cultural.
+municipal,Municipalidad de Concepción,Concepción,,,Coordinador de Eventos,,web,Segunda ciudad del país. Eventos culturales masivos.
+municipal,Centro Cultural Gabriela Mistral (GAM),Santiago,,,Coordinador de Programación,,web,gam.cl. Principal centro cultural de Chile.
+municipal,Centro Cultural Estación Mapocho,Santiago,,,Coordinador de Eventos,,web,Recinto emblematico. Eventos culturales y corporativos.
+educacion,Universidad de Chile,Santiago,,,Coordinador de Bienestar Estudiantil,,web,Principal universidad pública. Semanas universitarias y graduaciones.
+educacion,Pontificia Universidad Católica de Chile,Santiago,,,Coordinador de Extensión,,web,UC. Semanas PUC y eventos de facultades.
+educacion,Universidad Diego Portales,Santiago,,,Coordinador de Eventos,,web,UDP. Activa vida estudiantil.
+educacion,Universidad Adolfo Ibáñez,Santiago,,,Coordinador de Bienestar,,web,UAI. Fiestas de bienvenida y graduaciones de postgrado.
+educacion,Universidad del Desarrollo,Santiago,,,Coordinador de Eventos,,web,UDD. Eventos estudiantiles y graduaciones.
+educacion,DUOC UC,Santiago,,,Coordinador de Bienestar Estudiantil,,web,Mayor instituto técnico de Chile. Múltiples sedes.
+educacion,INACAP,Santiago,,,Coordinador de Eventos,,web,Instituto técnico con sedes en todo Chile.

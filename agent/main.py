@@ -3,10 +3,13 @@
 Agente de Prospección y Ventas — 3 son Multitud
 Uso:
     python main.py buscar  --tipo casino --ciudad Santiago --n 20
+    python main.py buscar  --tipo hotel --ciudad Santiago --n 15
     python main.py generar --tipo casino
     python main.py stats
     python main.py seguimientos
     python main.py add     --nombre "Casino X" --tipo casino --email foo@bar.com --ciudad Viña
+
+Tipos disponibles: casino, empresa, boda, productora, hotel, municipal, educacion
 """
 
 import click
@@ -20,6 +23,8 @@ import llm_generator
 
 console = Console()
 
+TIPOS = ["casino", "empresa", "boda", "productora", "hotel", "municipal", "educacion"]
+
 
 @click.group()
 def cli():
@@ -28,7 +33,7 @@ def cli():
 
 
 @cli.command()
-@click.option("--tipo", required=True, type=click.Choice(["casino", "empresa", "boda", "productora"]))
+@click.option("--tipo", required=True, type=click.Choice(TIPOS))
 @click.option("--ciudad", required=True)
 @click.option("--n", default=20, show_default=True, help="Máximo de resultados")
 @click.option("--guardar/--no-guardar", default=True, help="Guardar leads en CRM")
@@ -75,7 +80,7 @@ def buscar(tipo, ciudad, n, guardar):
 
 @cli.command()
 @click.option("--nombre", required=True)
-@click.option("--tipo", required=True, type=click.Choice(["casino", "empresa", "boda", "productora"]))
+@click.option("--tipo", required=True, type=click.Choice(TIPOS))
 @click.option("--ciudad", default="")
 @click.option("--email", default="")
 @click.option("--telefono", default="")
@@ -88,7 +93,7 @@ def add(nombre, tipo, ciudad, email, telefono, contacto, cargo):
 
 
 @cli.command()
-@click.option("--tipo", default=None, type=click.Choice(["casino", "empresa", "boda", "productora"]))
+@click.option("--tipo", default=None, type=click.Choice(TIPOS))
 @click.option("--id", "prospecto_id", default=None, type=int, help="ID específico de prospecto")
 @click.option("--seguimiento/--no-seguimiento", default=True, help="Programar follow-up a 3 días")
 def generar(tipo, prospecto_id, seguimiento):

@@ -17,7 +17,7 @@ def init_db():
         CREATE TABLE IF NOT EXISTS prospectos (
             id          INTEGER PRIMARY KEY AUTOINCREMENT,
             nombre      TEXT NOT NULL,
-            tipo        TEXT NOT NULL CHECK(tipo IN ('casino','empresa','boda','productora')),
+            tipo        TEXT NOT NULL CHECK(tipo IN ('casino','empresa','boda','productora','hotel','municipal','educacion')),
             ciudad      TEXT,
             email       TEXT,
             telefono    TEXT,

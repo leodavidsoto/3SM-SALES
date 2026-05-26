@@ -25,9 +25,12 @@ GOOGLE_MAPS_KEY = os.environ.get("GOOGLE_MAPS_API_KEY", "")
 
 TIPO_A_QUERY = {
     "casino":      ["casino", "restaurante bar", "pub live music", "restobar", "discoteca"],
-    "empresa":     ["empresa grande", "corporación", "holding", "industria"],
+    "empresa":     ["empresa grande", "corporación", "holding", "recursos humanos eventos"],
     "boda":        ["wedding planner", "organizador de bodas", "eventos sociales", "salón de eventos"],
     "productora":  ["productora de eventos", "productora audiovisual", "agencia de eventos"],
+    "hotel":       ["hotel 4 estrellas", "hotel 5 estrellas", "apart hotel eventos", "hotel boutique"],
+    "municipal":   ["municipalidad", "municipio", "departamento de cultura", "centro cultural"],
+    "educacion":   ["universidad", "instituto profesional", "colegio particular", "bienestar estudiantil"],
 }
 
 HEADERS = {
@@ -155,7 +158,7 @@ def buscar_leads(tipo: str, ciudad: str, max_results: int = 20) -> list[dict]:
     Usa Google Maps Places API si GOOGLE_MAPS_API_KEY está configurada,
     de lo contrario usa búsqueda web orgánica.
 
-    tipo: 'casino' | 'empresa' | 'boda' | 'productora'
+    tipo: 'casino' | 'empresa' | 'boda' | 'productora' | 'hotel' | 'municipal' | 'educacion'
     """
     queries = TIPO_A_QUERY.get(tipo, [tipo])
     all_leads: list[dict] = []
