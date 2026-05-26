@@ -1,0 +1,937 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>3 son Multitud — Plan de Ventas</title>
+<style>
+:root {
+  --gold: #FFD700;
+  --gold2: #D4AF37;
+  --bg: #080808;
+  --surface: #111;
+  --surface2: #181818;
+  --border: #222;
+  --text: #e8e8e8;
+  --muted: #666;
+  --green: #22c55e;
+  --blue: #38bdf8;
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, sans-serif;
+  font-size: 15px;
+  line-height: 1.6;
+}
+a { color: var(--gold); text-decoration: none; }
+
+/* NAV */
+nav {
+  position: sticky; top: 0; z-index: 100;
+  background: rgba(8,8,8,0.95);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--border);
+  padding: 0 20px;
+  display: flex; align-items: center; gap: 0;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+nav::-webkit-scrollbar { display: none; }
+.nav-brand {
+  font-weight: 900; font-size: 1rem;
+  color: var(--gold); white-space: nowrap;
+  padding: 16px 20px 16px 0;
+  border-right: 1px solid var(--border);
+  margin-right: 8px;
+  flex-shrink: 0;
+}
+nav a {
+  color: var(--muted); font-size: 0.88rem; font-weight: 500;
+  padding: 18px 14px; white-space: nowrap;
+  border-bottom: 2px solid transparent;
+  transition: color 0.2s, border-color 0.2s;
+  flex-shrink: 0;
+}
+nav a:hover, nav a.active { color: var(--gold); border-bottom-color: var(--gold); }
+
+/* HERO */
+.hero {
+  background: linear-gradient(160deg, #0f0f0f 0%, #141200 100%);
+  border-bottom: 1px solid #1a1500;
+  padding: 56px 24px 48px;
+  text-align: center;
+}
+.hero-badge {
+  display: inline-block;
+  background: rgba(255,215,0,0.1);
+  border: 1px solid rgba(255,215,0,0.25);
+  color: var(--gold); font-size: 0.78rem; font-weight: 600;
+  letter-spacing: 0.1em; text-transform: uppercase;
+  padding: 5px 14px; border-radius: 99px; margin-bottom: 20px;
+}
+.hero h1 {
+  font-size: clamp(2rem, 6vw, 3.2rem); font-weight: 900;
+  color: var(--gold); letter-spacing: -0.03em;
+  line-height: 1.1; margin-bottom: 10px;
+}
+.hero p { color: var(--muted); font-size: 1rem; max-width: 420px; margin: 0 auto; }
+.stats-row {
+  display: flex; justify-content: center; gap: 32px;
+  margin-top: 36px; flex-wrap: wrap;
+}
+.stat { text-align: center; }
+.stat-n { font-size: 1.8rem; font-weight: 900; color: var(--gold); line-height: 1; }
+.stat-l { font-size: 0.78rem; color: var(--muted); margin-top: 4px; }
+
+/* SECTIONS */
+.section { max-width: 860px; margin: 0 auto; padding: 48px 20px; }
+.section-title {
+  font-size: 1.6rem; font-weight: 900;
+  color: var(--gold); letter-spacing: -0.02em;
+  margin-bottom: 6px;
+}
+.section-sub { color: var(--muted); font-size: 0.9rem; margin-bottom: 32px; }
+
+/* WEEK GRID */
+.week-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 14px;
+}
+.day-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 14px; padding: 20px;
+  transition: border-color 0.2s;
+}
+.day-card:hover { border-color: #333; }
+.day-card.show { border-color: rgba(255,215,0,0.3); }
+.day-name {
+  font-size: 0.72rem; font-weight: 700;
+  letter-spacing: 0.1em; text-transform: uppercase;
+  color: var(--muted); margin-bottom: 4px;
+}
+.day-card.show .day-name { color: var(--gold); }
+.day-title { font-size: 1rem; font-weight: 700; margin-bottom: 14px; }
+.task-list { list-style: none; display: flex; flex-direction: column; gap: 8px; }
+.task {
+  display: flex; align-items: flex-start; gap: 9px;
+  font-size: 0.84rem; color: #bbb;
+}
+.task-icon { font-size: 0.9rem; flex-shrink: 0; margin-top: 1px; }
+.task-code {
+  font-family: 'SF Mono', 'Fira Code', monospace;
+  font-size: 0.78rem; background: var(--surface2);
+  border: 1px solid var(--border); border-radius: 5px;
+  padding: 1px 6px; color: var(--blue);
+}
+.show-badge {
+  display: inline-flex; align-items: center; gap: 5px;
+  background: rgba(255,215,0,0.08); border: 1px solid rgba(255,215,0,0.2);
+  color: var(--gold); font-size: 0.75rem; font-weight: 600;
+  padding: 3px 9px; border-radius: 99px; margin-bottom: 12px;
+}
+
+/* METRICS TABLE */
+.metrics-table {
+  width: 100%; border-collapse: collapse;
+  background: var(--surface); border-radius: 12px;
+  overflow: hidden; border: 1px solid var(--border);
+}
+.metrics-table th {
+  background: var(--surface2);
+  padding: 12px 18px; text-align: left;
+  font-size: 0.78rem; text-transform: uppercase;
+  letter-spacing: 0.06em; color: var(--muted);
+}
+.metrics-table td {
+  padding: 14px 18px;
+  border-top: 1px solid var(--border);
+  font-size: 0.92rem;
+}
+.metrics-table td:last-child {
+  font-weight: 700; color: var(--gold);
+  text-align: right;
+}
+
+/* REELS */
+.reels-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 16px;
+}
+.reel-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 16px; overflow: hidden;
+}
+.reel-header {
+  padding: 18px 20px 14px;
+  border-bottom: 1px solid var(--border);
+}
+.reel-num {
+  font-size: 0.72rem; font-weight: 700;
+  text-transform: uppercase; letter-spacing: 0.1em;
+  color: var(--muted); margin-bottom: 6px;
+}
+.reel-title { font-size: 1rem; font-weight: 800; line-height: 1.3; }
+.reel-sub { font-size: 0.82rem; color: var(--muted); margin-top: 3px; }
+.reel-body { padding: 16px 20px; display: flex; flex-direction: column; gap: 12px; }
+.reel-section-label {
+  font-size: 0.72rem; font-weight: 700;
+  text-transform: uppercase; letter-spacing: 0.08em;
+  color: var(--muted); margin-bottom: 4px;
+}
+.reel-steps { display: flex; flex-direction: column; gap: 5px; }
+.reel-step {
+  display: flex; gap: 8px;
+  font-size: 0.82rem; color: #aaa;
+}
+.step-time {
+  color: var(--gold); font-weight: 700;
+  font-size: 0.75rem; white-space: nowrap;
+  margin-top: 1px; flex-shrink: 0;
+}
+.caption-box {
+  background: var(--surface2);
+  border-left: 2px solid var(--gold2);
+  border-radius: 0 6px 6px 0;
+  padding: 10px 12px;
+  font-size: 0.82rem; color: #bbb; line-height: 1.5;
+}
+.hashtags { font-size: 0.78rem; color: var(--blue); flex-wrap: wrap; }
+
+/* SCRIPTS */
+.scripts-list { display: flex; flex-direction: column; gap: 12px; }
+.script-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 14px; overflow: hidden;
+}
+.script-head {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 16px 20px; cursor: pointer;
+  user-select: none;
+  transition: background 0.15s;
+}
+.script-head:hover { background: var(--surface2); }
+.script-niche {
+  display: flex; align-items: center; gap: 12px;
+}
+.niche-icon { font-size: 1.2rem; }
+.niche-name { font-weight: 700; font-size: 0.95rem; }
+.niche-sub { font-size: 0.8rem; color: var(--muted); }
+.chevron {
+  color: var(--muted); font-size: 1rem;
+  transition: transform 0.2s;
+}
+.script-body {
+  display: none;
+  padding: 0 20px 20px;
+  border-top: 1px solid var(--border);
+}
+.script-body.open { display: block; }
+.script-step {
+  margin-top: 16px;
+}
+.step-label {
+  font-size: 0.72rem; font-weight: 700;
+  text-transform: uppercase; letter-spacing: 0.08em;
+  color: var(--muted); margin-bottom: 8px;
+}
+.speech {
+  background: var(--surface2);
+  border-radius: 10px; padding: 12px 14px;
+  font-size: 0.88rem; line-height: 1.6; color: #ccc;
+  border-left: 2px solid var(--border);
+}
+.speech.gold { border-left-color: var(--gold); }
+.speech.blue { border-left-color: var(--blue); }
+.speech.red  { border-left-color: #f87171; }
+.cta-pill {
+  display: inline-flex; align-items: center; gap: 6px;
+  background: rgba(255,215,0,0.1); border: 1px solid rgba(255,215,0,0.3);
+  color: var(--gold); font-size: 0.82rem; font-weight: 600;
+  padding: 6px 12px; border-radius: 99px; margin-top: 12px;
+}
+
+/* DM CARDS */
+.dm-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 14px;
+}
+.dm-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 14px; padding: 18px;
+}
+.dm-niche {
+  font-size: 0.72rem; font-weight: 700;
+  text-transform: uppercase; letter-spacing: 0.1em;
+  color: var(--gold); margin-bottom: 12px;
+}
+.dm-block { margin-bottom: 14px; }
+.dm-label {
+  font-size: 0.72rem; color: var(--muted);
+  margin-bottom: 5px; font-weight: 600;
+}
+.dm-bubble {
+  background: var(--surface2);
+  border-radius: 12px; padding: 11px 13px;
+  font-size: 0.84rem; color: #ccc; line-height: 1.55;
+}
+
+/* COMMANDS */
+.cmd-block {
+  background: #0d1117;
+  border: 1px solid #21262d;
+  border-radius: 10px;
+  padding: 16px 18px;
+  font-family: 'SF Mono','Fira Code',monospace;
+  font-size: 0.83rem;
+  color: #e6edf3;
+  overflow-x: auto;
+}
+.cmd-comment { color: #8b949e; }
+.cmd-cmd { color: var(--blue); }
+
+/* DIVIDER */
+.divider {
+  border: none;
+  border-top: 1px solid var(--border);
+  margin: 0;
+}
+
+/* RESPONSIVE */
+@media (max-width: 480px) {
+  .hero { padding: 40px 20px 36px; }
+  .stats-row { gap: 24px; }
+  .section { padding: 36px 16px; }
+}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-brand">3SM</div>
+  <a href="#plan" class="active">Plan Semanal</a>
+  <a href="#reels">Reels</a>
+  <a href="#llamadas">Llamadas</a>
+  <a href="#dm">WhatsApp / DM</a>
+  <a href="#comandos">Comandos</a>
+</nav>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-badge">Agente de Prospección</div>
+  <h1>3 son Multitud</h1>
+  <p>Plan completo de ventas y contenido — Casino Enjoy Santiago · Jue · Vie · Sáb</p>
+  <div class="stats-row">
+    <div class="stat"><div class="stat-n">20</div><div class="stat-l">Correos / semana</div></div>
+    <div class="stat"><div class="stat-n">10</div><div class="stat-l">Llamadas / semana</div></div>
+    <div class="stat"><div class="stat-n">5</div><div class="stat-l">Reels / semana</div></div>
+    <div class="stat"><div class="stat-n">7</div><div class="stat-l">Nichos</div></div>
+  </div>
+</div>
+
+<!-- ==================== PLAN SEMANAL ==================== -->
+<section class="section" id="plan">
+  <div class="section-title">Plan Semanal</div>
+  <div class="section-sub">Objetivo: 20 correos · 10 llamadas · 5 reels · 2–3 leads calientes</div>
+
+  <div class="week-grid">
+
+    <!-- LUNES -->
+    <div class="day-card">
+      <div class="day-name">Lunes</div>
+      <div class="day-title">Carga y Productoras</div>
+      <ul class="task-list">
+        <li class="task"><span class="task-icon">💾</span><span><code class="task-code">cargar_seeds.py</code> — subir prospectos al CRM</span></li>
+        <li class="task"><span class="task-icon">✉️</span><span>Generar y enviar correos: Agencia Click · F.Producciones · LaPizarra · Zitta · AVAD</span></li>
+        <li class="task"><span class="task-icon">📞</span><span>Llamar Magdalena Tapia +56 2 2638 3686</span></li>
+        <li class="task"><span class="task-icon">📞</span><span>Llamar F.Producciones +56 9 6538 3591</span></li>
+        <li class="task"><span class="task-icon">🎬</span><span>Grabar Reel 1 (Casino reveal)</span></li>
+      </ul>
+    </div>
+
+    <!-- MARTES -->
+    <div class="day-card">
+      <div class="day-name">Martes</div>
+      <div class="day-title">Hoteles y Municipales</div>
+      <ul class="task-list">
+        <li class="task"><span class="task-icon">✉️</span><span>Correos: Hotel W · Mandarin · Ritz-Carlton · Cumbres · NH</span></li>
+        <li class="task"><span class="task-icon">✉️</span><span>Correos GAM · Municipalidad Providencia · Las Condes</span></li>
+        <li class="task"><span class="task-icon">✉️</span><span>ANAWEP: anawepchile@gmail.com</span></li>
+        <li class="task"><span class="task-icon">📲</span><span>Publicar <strong>Reel 1</strong> (20:00h)</span></li>
+        <li class="task"><span class="task-icon">📞</span><span>Llamar GAM y Municipalidad Providencia</span></li>
+      </ul>
+    </div>
+
+    <!-- MIERCOLES -->
+    <div class="day-card">
+      <div class="day-name">Miércoles</div>
+      <div class="day-title">Empresas y Casinos</div>
+      <ul class="task-list">
+        <li class="task"><span class="task-icon">✉️</span><span>Correos: BancoEstado · Entel · CODELCO · Latam · Claro</span></li>
+        <li class="task"><span class="task-icon">✉️</span><span>Casino Dreams: servicioalcliente@dreams.cl</span></li>
+        <li class="task"><span class="task-icon">📲</span><span>Publicar <strong>Reel 2</strong> (20:00h)</span></li>
+        <li class="task"><span class="task-icon">💬</span><span>Follow-up WhatsApp contactos sin respuesta</span></li>
+        <li class="task"><span class="task-icon">🎬</span><span>Grabar Reel 3 o 4</span></li>
+      </ul>
+    </div>
+
+    <!-- JUEVES -->
+    <div class="day-card show">
+      <div class="day-name">Jueves</div>
+      <div class="show-badge">🎸 Show Casino Enjoy</div>
+      <div class="day-title">Seguimientos + Show</div>
+      <ul class="task-list">
+        <li class="task"><span class="task-icon">✅</span><span>Revisar respuestas email — marcar respondidos</span></li>
+        <li class="task"><span class="task-icon">✉️</span><span>Correos educación: U. Chile · UC · UDP · UAI · DUOC</span></li>
+        <li class="task"><span class="task-icon">📸</span><span>Show: grabar 3–5 clips para reels</span></li>
+        <li class="task"><span class="task-icon">📱</span><span>Activar fan-cam QR en el escenario</span></li>
+        <li class="task"><span class="task-icon">📲</span><span>Stories en @3smultitud y @luomina</span></li>
+      </ul>
+    </div>
+
+    <!-- VIERNES -->
+    <div class="day-card show">
+      <div class="day-name">Viernes</div>
+      <div class="show-badge">🎸 Show Casino Enjoy</div>
+      <div class="day-title">Llamadas + Show</div>
+      <ul class="task-list">
+        <li class="task"><span class="task-icon">📲</span><span>Publicar <strong>Reel 3</strong> (12:00h)</span></li>
+        <li class="task"><span class="task-icon">📞</span><span>Llamar Sebastián LaPizarra +56 9 5841 9326</span></li>
+        <li class="task"><span class="task-icon">📞</span><span>Llamar AVAD Eventos +56 9 9362 3059</span></li>
+        <li class="task"><span class="task-icon">📸</span><span>Show: closing shot y crowd reaction</span></li>
+        <li class="task"><span class="task-icon">📲</span><span>Cross-post Stories @luomina → @3smultitud</span></li>
+      </ul>
+    </div>
+
+    <!-- SABADO -->
+    <div class="day-card show">
+      <div class="day-name">Sábado</div>
+      <div class="show-badge">🎸 Show Casino Enjoy</div>
+      <div class="day-title">Contenido + Show</div>
+      <ul class="task-list">
+        <li class="task"><span class="task-icon">📲</span><span>Publicar <strong>Reel 4</strong> (12:00h)</span></li>
+        <li class="task"><span class="task-icon">🎬</span><span>Grabar Reel 5 (preparación pre-show)</span></li>
+        <li class="task"><span class="task-icon">📱</span><span>Activar fan-cam QR</span></li>
+        <li class="task"><span class="task-icon">📸</span><span>Grabar contenido para semana siguiente</span></li>
+      </ul>
+    </div>
+
+    <!-- DOMINGO -->
+    <div class="day-card">
+      <div class="day-name">Domingo</div>
+      <div class="day-title">Cierre y Planificación</div>
+      <ul class="task-list">
+        <li class="task"><span class="task-icon">📊</span><span><code class="task-code">python main.py stats</code></span></li>
+        <li class="task"><span class="task-icon">🔔</span><span><code class="task-code">python main.py seguimientos</code></span></li>
+        <li class="task"><span class="task-icon">📲</span><span>Publicar <strong>Reel 5</strong> (19:00h)</span></li>
+        <li class="task"><span class="task-icon">🗓️</span><span>Planificar contenido semana siguiente</span></li>
+      </ul>
+    </div>
+
+  </div>
+
+  <!-- Metrics -->
+  <h3 style="margin:36px 0 14px; font-size:1rem; color:var(--muted); text-transform:uppercase; letter-spacing:0.06em;">Métricas objetivo</h3>
+  <table class="metrics-table">
+    <thead><tr><th>Métrica</th><th>Meta semanal</th></tr></thead>
+    <tbody>
+      <tr><td>Correos enviados</td><td>20</td></tr>
+      <tr><td>Respuestas recibidas</td><td>3–5 (15–25%)</td></tr>
+      <tr><td>Llamadas realizadas</td><td>10</td></tr>
+      <tr><td>Leads calientes</td><td>2–3</td></tr>
+      <tr><td>Reels publicados</td><td>3–5</td></tr>
+      <tr><td>Solicitudes fan-cam</td><td>10+</td></tr>
+    </tbody>
+  </table>
+</section>
+
+<hr class="divider">
+
+<!-- ==================== REELS ==================== -->
+<section class="section" id="reels">
+  <div class="section-title">Guiones de Reels</div>
+  <div class="section-sub">5 reels listos para grabar — concepto, guion visual y caption</div>
+
+  <div class="reels-grid">
+
+    <div class="reel-card">
+      <div class="reel-header">
+        <div class="reel-num">Reel 1 · 20–30 seg</div>
+        <div class="reel-title">"El Reveal" — 5 años en el casino</div>
+        <div class="reel-sub">@3smultitud · Lunes → Martes 20h</div>
+      </div>
+      <div class="reel-body">
+        <div>
+          <div class="reel-section-label">Guion visual</div>
+          <div class="reel-steps">
+            <div class="reel-step"><span class="step-time">0:00</span><span>Plano cerrado manos en la guitarra (oscuro, dramático)</span></div>
+            <div class="reel-step"><span class="step-time">0:03</span><span>Corte a Mino en el bajo</span></div>
+            <div class="reel-step"><span class="step-time">0:06</span><span>Primer plano Romina + micrófono</span></div>
+            <div class="reel-step"><span class="step-time">0:10</span><span>Pull-back lento: se revela Casino Enjoy Santiago</span></div>
+            <div class="reel-step"><span class="step-time">0:14</span><span>Texto: <em>"Todos los jue · vie · sáb"</em></span></div>
+            <div class="reel-step"><span class="step-time">0:18</span><span>Texto: <em>"5 años. Casino Enjoy Santiago."</em></span></div>
+            <div class="reel-step"><span class="step-time">0:22</span><span>Texto final: <em>"¿Cuándo vienes? 👀"</em></span></div>
+          </div>
+        </div>
+        <div>
+          <div class="reel-section-label">Caption</div>
+          <div class="caption-box">El secreto mejor guardado de Santiago. 🎸<br>5 años en Casino Enjoy. Jue · Vie · Sáb.<br>¿Ya nos fuiste a ver? 👇</div>
+        </div>
+        <div class="hashtags">#3sonMultitud #CasinoEnjoy #BandaEnVivo #SantiagoMusica #LiveMusic</div>
+      </div>
+    </div>
+
+    <div class="reel-card">
+      <div class="reel-header">
+        <div class="reel-num">Reel 2 · 20–25 seg</div>
+        <div class="reel-title">"¿Cuántos suenan?"</div>
+        <div class="reel-sub">@3smultitud · Miércoles 20h</div>
+      </div>
+      <div class="reel-body">
+        <div>
+          <div class="reel-section-label">Guion visual</div>
+          <div class="reel-steps">
+            <div class="reel-step"><span class="step-time">0:00</span><span>Texto sobre negro: <em>"¿Cuántos músicos ves aquí?"</em></span></div>
+            <div class="reel-step"><span class="step-time">0:03</span><span>Solo Cristóbal — empieza a tocar, sonido lleno</span></div>
+            <div class="reel-step"><span class="step-time">0:10</span><span>Aparece Mino</span></div>
+            <div class="reel-step"><span class="step-time">0:14</span><span>Aparece Romina</span></div>
+            <div class="reel-step"><span class="step-time">0:20</span><span>Texto: <em>"3 músicos. La sensación de que hay muchos."</em></span></div>
+          </div>
+        </div>
+        <div>
+          <div class="reel-section-label">Caption</div>
+          <div class="caption-box">Sólo 3. Pero la sensación es... otra. 🎶<br>Jue · Vie · Sáb en Casino Enjoy Santiago 🎰</div>
+        </div>
+        <div class="hashtags">#3SM #LiveBand #BandaEnVivo #MusicaChilena #ShowEnVivo</div>
+      </div>
+    </div>
+
+    <div class="reel-card">
+      <div class="reel-header">
+        <div class="reel-num">Reel 3 · 15–25 seg</div>
+        <div class="reel-title">"El juego en escena"</div>
+        <div class="reel-sub">@3smultitud · Viernes 12h</div>
+      </div>
+      <div class="reel-body">
+        <div>
+          <div class="reel-section-label">Guion visual</div>
+          <div class="reel-steps">
+            <div class="reel-step"><span class="step-time">0:00</span><span>Cristóbal y Mino haciendo algo ridículo pre-show</span></div>
+            <div class="reel-step"><span class="step-time">0:05</span><span>Romina los mira con cara de "¿en serio?"</span></div>
+            <div class="reel-step"><span class="step-time">0:08</span><span>Corte duro: los tres en escenario, profesionales</span></div>
+            <div class="reel-step"><span class="step-time">0:18</span><span>En el show, un guiño cómico entre ellos</span></div>
+            <div class="reel-step"><span class="step-time">0:22</span><span>Texto: <em>"El juego en escena. 3 son Multitud."</em></span></div>
+          </div>
+        </div>
+        <div>
+          <div class="reel-section-label">Caption</div>
+          <div class="caption-box">Detrás del escenario somos un caos. En el escenario... también. 😂<br>Casino Enjoy Santiago · Jue · Vie · Sáb</div>
+        </div>
+        <div class="hashtags">#BehindTheScenes #3sonMultitud #CasinoEnjoy #MusicaEnVivo</div>
+      </div>
+    </div>
+
+    <div class="reel-card">
+      <div class="reel-header">
+        <div class="reel-num">Reel 4 · 20–30 seg</div>
+        <div class="reel-title">"Romina × 3SM" — Cross-promo</div>
+        <div class="reel-sub">@luomina + tag @3smultitud · Sábado 12h</div>
+      </div>
+      <div class="reel-body">
+        <div>
+          <div class="reel-section-label">Guion visual</div>
+          <div class="reel-steps">
+            <div class="reel-step"><span class="step-time">0:00</span><span>Romina enseñando / ejercicio vocal (coach mode)</span></div>
+            <div class="reel-step"><span class="step-time">0:05</span><span>Texto: <em>"De día, coach vocal..."</em></span></div>
+            <div class="reel-step"><span class="step-time">0:09</span><span>Hard cut: Romina en escenario del casino</span></div>
+            <div class="reel-step"><span class="step-time">0:13</span><span>Texto: <em>"De noche..."</em></span></div>
+            <div class="reel-step"><span class="step-time">0:22</span><span>Texto: <em>"Soy @luomina. Y también soy 3 son Multitud."</em></span></div>
+          </div>
+        </div>
+        <div>
+          <div class="reel-section-label">Caption (desde @luomina)</div>
+          <div class="caption-box">De día ayudo a otros a encontrar su voz. De noche, uso la mía. 🎤<br>Jue · Vie · Sáb en Casino Enjoy con @3smultitud 🎰</div>
+        </div>
+        <div class="hashtags">#CoachVocal #Luomina #3sonMultitud #CasinoEnjoy #VocalCoach</div>
+      </div>
+    </div>
+
+    <div class="reel-card">
+      <div class="reel-header">
+        <div class="reel-num">Reel 5 · 20–30 seg</div>
+        <div class="reel-title">"¿Buscas banda?" — CTA directo</div>
+        <div class="reel-sub">@3smultitud · Domingo 19h</div>
+      </div>
+      <div class="reel-body">
+        <div>
+          <div class="reel-section-label">Guion visual</div>
+          <div class="reel-steps">
+            <div class="reel-step"><span class="step-time">0:00</span><span>Texto animado: <em>"¿Tienes un evento?"</em></span></div>
+            <div class="reel-step"><span class="step-time">0:04</span><span>Clips rápidos: casino → empresa → boda → hotel</span></div>
+            <div class="reel-step"><span class="step-time">0:12</span><span>Full band shot en el escenario</span></div>
+            <div class="reel-step"><span class="step-time">0:17</span><span>Texto: <em>"5 años en Casino Enjoy Chile"</em></span></div>
+            <div class="reel-step"><span class="step-time">0:25</span><span>Texto: <em>"Escríbenos 👇"</em></span></div>
+          </div>
+        </div>
+        <div>
+          <div class="reel-section-label">Caption</div>
+          <div class="caption-box">Bodas ✓ · Empresas ✓ · Hoteles ✓ · Cumpleaños ✓<br>5 años en Casino Enjoy. ¿Tienes fecha? DM 🎸</div>
+        </div>
+        <div class="hashtags">#BandaParaEventos #BodaChile #EventosSantiago #3sonMultitud #WeddingBand</div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<hr class="divider">
+
+<!-- ==================== LLAMADAS ==================== -->
+<section class="section" id="llamadas">
+  <div class="section-title">Guiones de Llamadas</div>
+  <div class="section-sub">Objetivo de la llamada: conseguir el email. No vender el show por teléfono. Máximo 3 minutos.</div>
+
+  <div class="scripts-list">
+
+    <!-- CASINO -->
+    <div class="script-card">
+      <div class="script-head" onclick="toggle(this)">
+        <div class="script-niche">
+          <span class="niche-icon">🎰</span>
+          <div><div class="niche-name">Casino / Bar / Restobar</div><div class="niche-sub">Hard Rock, Bar Ramblas, Bar Margarita, Dreams...</div></div>
+        </div>
+        <span class="chevron">▼</span>
+      </div>
+      <div class="script-body">
+        <div class="script-step"><div class="step-label">🟡 Apertura</div><div class="speech gold">"Hola, buenos días. ¿Podría hablar con el coordinador de shows / encargado de entretenimiento?"</div></div>
+        <div class="script-step"><div class="step-label">🎤 Presentación</div><div class="speech">"Hola [nombre], soy Cristóbal de 3 son Multitud. Somos un trío musical con 5 años tocando en Casino Enjoy Santiago — hacemos la residencia de jueves a sábado. Los llamo porque estamos abriendo agenda para nuevas fechas y [Bar/Casino X] encaja con lo que hacemos."</div></div>
+        <div class="script-step"><div class="step-label">💡 Propuesta</div><div class="speech blue">"Hacemos covers de rock, pop, latin. Sonamos como banda completa siendo tres. ¿Tienen programación de shows en vivo actualmente?"</div></div>
+        <div class="script-step"><div class="step-label">❌ Objeción: "Ya tenemos banda"</div><div class="speech red">"Perfecto, no los quiero reemplazar — muchos lugares trabajan con más de un acto. ¿Puedo enviarles un video para que nos tengan de referencia?"</div></div>
+        <div class="script-step"><div class="step-label">❌ Objeción: "No tenemos presupuesto"</div><div class="speech red">"Entiendo. ¿Con qué frecuencia programan shows? A veces podemos ajustar el formato — dúo acústico, trío completo."</div></div>
+        <div class="cta-pill">✉️ CTA: "¿A qué email me conviene enviar un video del show y una propuesta?"</div>
+      </div>
+    </div>
+
+    <!-- PRODUCTORA -->
+    <div class="script-card">
+      <div class="script-head" onclick="toggle(this)">
+        <div class="script-niche">
+          <span class="niche-icon">🎬</span>
+          <div><div class="niche-name">Productora de Eventos</div><div class="niche-sub">Agencia Click, F.Producciones, LaPizarra, Zitta, AVAD...</div></div>
+        </div>
+        <span class="chevron">▼</span>
+      </div>
+      <div class="script-body">
+        <div class="script-step"><div class="step-label">🟡 Apertura</div><div class="speech gold">"Hola, busco a [nombre] / el área de producción artística."</div></div>
+        <div class="script-step"><div class="step-label">🎤 Presentación</div><div class="speech">"Hola [nombre], soy Cristóbal de 3 son Multitud. Trío musical con 5 años en Casino Enjoy Santiago — residencia actual jue a sáb. Me gustaría que [Productora X] nos tuviera en su base de proveedores musicales."</div></div>
+        <div class="script-step"><div class="step-label">💡 Propuesta</div><div class="speech blue">"Lo que nos diferencia: somos llave en mano real. Rider técnico probado semana a semana, llegamos puntuales, no fallamos. Para una productora eso es crítico. ¿Tienen eventos próximos donde busquen entretenimiento musical?"</div></div>
+        <div class="script-step"><div class="step-label">❌ Objeción: "Trabajamos con artistas que ya conocemos"</div><div class="speech red">"Entendible. ¿Cuál sería el proceso para quedar en su base de proveedores? Me gustaría enviarles nuestro EPK para referencia futura."</div></div>
+        <div class="cta-pill">✉️ CTA: "¿A qué email me conviene enviar nuestro EPK con video del show?"</div>
+      </div>
+    </div>
+
+    <!-- BODA -->
+    <div class="script-card">
+      <div class="script-head" onclick="toggle(this)">
+        <div class="script-niche">
+          <span class="niche-icon">💍</span>
+          <div><div class="niche-name">Wedding Planner / Boda</div><div class="niche-sub">ANAWEP, Perfect Wedding, WPCH, Andrea WP...</div></div>
+        </div>
+        <span class="chevron">▼</span>
+      </div>
+      <div class="script-body">
+        <div class="script-step"><div class="step-label">🟡 Apertura</div><div class="speech gold">"Hola, busco a [nombre] / el equipo de [Wedding Planner X]."</div></div>
+        <div class="script-step"><div class="step-label">🎤 Presentación</div><div class="speech">"Hola [nombre], soy Cristóbal de 3 son Multitud. Trío — guitarra, bajo y voz — con 5 años en Casino Enjoy Chile. La llamo porque trabajo con wedding planners para ofrecer entretenimiento musical en bodas. ¿Tienen bodas próximas donde busquen banda en vivo?"</div></div>
+        <div class="script-step"><div class="step-label">💡 Propuesta</div><div class="speech blue">"Nuestra ventaja es la confiabilidad: 5 años sin fallar un show. Para una boda eso es lo más importante. Nuestra cantante Romina es además coach vocal — experiencia con primer baile y momentos especiales."</div></div>
+        <div class="script-step"><div class="step-label">❌ Objeción: "Ya tenemos proveedores"</div><div class="speech red">"Por supuesto. A veces la banda titular no puede y hay que tener un plan B. ¿Puedo enviarles un video para que nos tengan de referencia?"</div></div>
+        <div class="script-step"><div class="step-label">❌ Objeción: "¿Cuánto cobran?"</div><div class="speech red">"Depende del formato y duración. ¿Me puede contar un poco más sobre los eventos que manejan? Así armo una propuesta específica."</div></div>
+        <div class="cta-pill">✉️ CTA: "¿A qué email les mando nuestro dossier de bodas con video y tarifas?"</div>
+      </div>
+    </div>
+
+    <!-- EMPRESA -->
+    <div class="script-card">
+      <div class="script-head" onclick="toggle(this)">
+        <div class="script-niche">
+          <span class="niche-icon">🏢</span>
+          <div><div class="niche-name">Empresa / RRHH</div><div class="niche-sub">Cencosud, Falabella, BancoEstado, CODELCO, Latam...</div></div>
+        </div>
+        <span class="chevron">▼</span>
+      </div>
+      <div class="script-body">
+        <div class="script-step"><div class="step-label">🟡 Apertura</div><div class="speech gold">"Hola, busco al área de Recursos Humanos / Bienestar / Coordinador de Eventos."</div></div>
+        <div class="script-step"><div class="step-label">🎤 Presentación</div><div class="speech">"Hola [nombre], soy Cristóbal de 3 son Multitud. Banda en vivo con 5 años en Casino Enjoy Santiago. Los contacto porque [Empresa X] seguramente tiene eventos de fin de año, y nos gustaría ser considerados."</div></div>
+        <div class="script-step"><div class="step-label">💡 Propuesta</div><div class="speech blue">"Somos versátiles: rock, pop, latin, boleros. Tres personas que suenan como banda completa, montaje rápido, sin complicaciones técnicas. 5 años sin fallar un show."</div></div>
+        <div class="script-step"><div class="step-label">❌ Objeción: "Ya lo tenemos definido"</div><div class="speech red">"No hay problema. ¿Cuándo suelen planificar los eventos del año siguiente? Me gustaría enviarles información para que nos tengan de referencia."</div></div>
+        <div class="cta-pill">✉️ CTA: "¿A qué correo les envío nuestro video y propuesta de formatos corporativos?"</div>
+      </div>
+    </div>
+
+    <!-- HOTEL -->
+    <div class="script-card">
+      <div class="script-head" onclick="toggle(this)">
+        <div class="script-niche">
+          <span class="niche-icon">🏨</span>
+          <div><div class="niche-name">Hotel</div><div class="niche-sub">Hotel W, Mandarin, Ritz-Carlton, Cumbres, The Singular...</div></div>
+        </div>
+        <span class="chevron">▼</span>
+      </div>
+      <div class="script-body">
+        <div class="script-step"><div class="step-label">🟡 Apertura</div><div class="speech gold">"Hola, busco al Coordinador de Eventos / Gerente de Entretenimiento."</div></div>
+        <div class="script-step"><div class="step-label">🎤 Presentación</div><div class="speech">"Hola [nombre], soy Cristóbal de 3 son Multitud. Trío musical con 5 años en Casino Enjoy Santiago. Los contacto porque [Hotel X] encaja perfectamente con el tipo de shows íntimos y de calidad que hacemos."</div></div>
+        <div class="script-step"><div class="step-label">💡 Propuesta</div><div class="speech blue">"Para hoteles ofrecemos sets para lobby, salón o terraza: música de alta calidad que eleva la experiencia del huésped. No es un show invasivo — es la banda que hace que la gente se quede más tiempo."</div></div>
+        <div class="script-step"><div class="step-label">❌ Objeción: "No tenemos presupuesto"</div><div class="speech red">"Entiendo. Tenemos formatos flexibles: dúo acústico, trío completo. ¿Puedo enviarles información para tenerla de referencia?"</div></div>
+        <div class="cta-pill">✉️ CTA: "¿A qué correo les envío nuestro dossier para hotel con videos y formatos?"</div>
+      </div>
+    </div>
+
+    <!-- MUNICIPAL -->
+    <div class="script-card">
+      <div class="script-head" onclick="toggle(this)">
+        <div class="script-niche">
+          <span class="niche-icon">🏛️</span>
+          <div><div class="niche-name">Municipal / Centro Cultural</div><div class="niche-sub">GAM, Estación Mapocho, Municipalidades...</div></div>
+        </div>
+        <span class="chevron">▼</span>
+      </div>
+      <div class="script-body">
+        <div class="script-step"><div class="step-label">🟡 Apertura</div><div class="speech gold">"Hola, busco al Coordinador de Cultura / Encargado de Eventos."</div></div>
+        <div class="script-step"><div class="step-label">🎤 Presentación</div><div class="speech">"Hola [nombre], soy Cristóbal de 3 son Multitud. Trío musical chileno con 5 años de trayectoria, actualmente en Casino Enjoy Santiago. Nos gustaría participar en la programación cultural de [Municipio/Centro] este año."</div></div>
+        <div class="script-step"><div class="step-label">💡 Propuesta</div><div class="speech blue">"Ofrecemos shows para fiestas patrias, aniversarios, Día de la Música, ferias. Repertorio adaptable: folklore, rock nacional, pop. Show familiar o de noche para adultos."</div></div>
+        <div class="script-step"><div class="step-label">❌ Objeción: "Se contrata por licitación"</div><div class="speech red">"Entendemos el proceso. ¿Cómo podemos postular formalmente? ¿Tienen registro de proveedores artísticos?"</div></div>
+        <div class="cta-pill">✉️ CTA: "¿A qué email les envío nuestra ficha artística con videos y referencias?"</div>
+      </div>
+    </div>
+
+    <!-- EDUCACION -->
+    <div class="script-card">
+      <div class="script-head" onclick="toggle(this)">
+        <div class="script-niche">
+          <span class="niche-icon">🎓</span>
+          <div><div class="niche-name">Educación</div><div class="niche-sub">U. Chile, UC, UDP, UAI, DUOC, INACAP...</div></div>
+        </div>
+        <span class="chevron">▼</span>
+      </div>
+      <div class="script-body">
+        <div class="script-step"><div class="step-label">🟡 Apertura</div><div class="speech gold">"Hola, busco al Coordinador de Bienestar Estudiantil / Extensión."</div></div>
+        <div class="script-step"><div class="step-label">🎤 Presentación</div><div class="speech">"Hola [nombre], soy Cristóbal de 3 son Multitud. Banda en vivo con 5 años en Casino Enjoy Santiago. Los contacto porque [Universidad X] tiene semanas universitarias, graduaciones y fiestas de bienvenida, y nos gustaría ser la banda para esos eventos."</div></div>
+        <div class="script-step"><div class="step-label">💡 Propuesta</div><div class="speech blue">"Show energético con interacción con el público. Rock, pop en español e inglés, latin. Tres músicos que suenan como banda completa, sin el costo de una banda grande."</div></div>
+        <div class="script-step"><div class="step-label">❌ Objeción: "No tenemos presupuesto"</div><div class="speech red">"Entendemos. ¿Tienen fondos de actividades estudiantiles? También podemos evaluar formatos más económicos."</div></div>
+        <div class="cta-pill">✉️ CTA: "¿A qué email les mando información con videos y propuesta?"</div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<hr class="divider">
+
+<!-- ==================== DM / WHATSAPP ==================== -->
+<section class="section" id="dm">
+  <div class="section-title">WhatsApp / Instagram DM</div>
+  <div class="section-sub">Máximo 3 oraciones. Siempre con "Casino Enjoy Santiago". Un solo CTA.</div>
+
+  <div class="dm-grid">
+
+    <div class="dm-card">
+      <div class="dm-niche">🎬 Productoras</div>
+      <div class="dm-block">
+        <div class="dm-label">DM Instagram</div>
+        <div class="dm-bubble">Hola [nombre], somos 3 son Multitud — trío en vivo con 5 años en Casino Enjoy Santiago (jue–sáb). Nos gustaría estar en su base de proveedores musicales. ¿Les puedo enviar nuestro EPK?</div>
+      </div>
+      <div class="dm-block">
+        <div class="dm-label">WhatsApp</div>
+        <div class="dm-bubble">Hola [nombre], soy Cristóbal de 3 son Multitud. Llevamos 5 años en Casino Enjoy Santiago. Vi que [Productora X] trabaja con eventos corporativos y me gustaría enviarles un video del show. ¿Está bien?</div>
+      </div>
+      <div class="dm-block">
+        <div class="dm-label">Follow-up (3 días sin respuesta)</div>
+        <div class="dm-bubble">Hola [nombre], te escribí hace unos días. Solo quería saber si les llegó el mensaje. Si hay un mejor canal, me avisas. ¡Gracias!</div>
+      </div>
+    </div>
+
+    <div class="dm-card">
+      <div class="dm-niche">💍 Wedding Planners</div>
+      <div class="dm-block">
+        <div class="dm-label">DM Instagram</div>
+        <div class="dm-bubble">Hola [nombre], somos 3 son Multitud — trío musical con 5 años en Casino Enjoy Chile. Buscamos planners con quienes colaborar en bodas. ¿Tienes eventos donde estés buscando banda en vivo?</div>
+      </div>
+      <div class="dm-block">
+        <div class="dm-label">WhatsApp (desde Romina)</div>
+        <div class="dm-bubble">Hola [nombre], soy Romina de 3 son Multitud. Llevamos 5 años sin fallar un show — para bodas eso lo es todo. ¿Te puedo enviar un video y nuestras tarifas?</div>
+      </div>
+    </div>
+
+    <div class="dm-card">
+      <div class="dm-niche">🏢 Empresas</div>
+      <div class="dm-block">
+        <div class="dm-label">Email corto / DM</div>
+        <div class="dm-bubble">Hola [nombre], somos 3 son Multitud — trío en vivo con 5 años en Casino Enjoy Santiago. ¿Están planificando la fiesta de fin de año? Les puedo enviar una propuesta con formatos y tarifas.</div>
+      </div>
+      <div class="dm-block">
+        <div class="dm-label">WhatsApp</div>
+        <div class="dm-bubble">Hola [nombre], soy Cristóbal de 3 son Multitud — banda en Casino Enjoy Santiago (jue–sáb). ¿Tienen eventos corporativos donde necesiten entretenimiento musical? ¿Les envío un video?</div>
+      </div>
+    </div>
+
+    <div class="dm-card">
+      <div class="dm-niche">🎰 Casinos / Bares</div>
+      <div class="dm-block">
+        <div class="dm-label">DM Instagram</div>
+        <div class="dm-bubble">Hola, somos 3 son Multitud — trío musical con 5 años en Casino Enjoy Santiago. ¿Tienen programación de shows en vivo? Nos gustaría presentarles una propuesta.</div>
+      </div>
+      <div class="dm-block">
+        <div class="dm-label">WhatsApp</div>
+        <div class="dm-bubble">Hola [nombre], soy Cristóbal de 3 son Multitud. Hacemos la residencia actual en Casino Enjoy Santiago (jue–sáb). ¿Están buscando actos en vivo para [nombre del lugar]?</div>
+      </div>
+    </div>
+
+    <div class="dm-card">
+      <div class="dm-niche">🏨 Hoteles</div>
+      <div class="dm-block">
+        <div class="dm-label">DM Instagram</div>
+        <div class="dm-bubble">Hola [nombre], somos 3 son Multitud — trío musical con 5 años en Casino Enjoy. Ofrecemos shows de lobby y eventos para hoteles de alta gama. ¿Tienen programación musical?</div>
+      </div>
+      <div class="dm-block">
+        <div class="dm-label">WhatsApp</div>
+        <div class="dm-bubble">Hola [nombre], soy Cristóbal de 3 son Multitud. Llevamos 5 años en Casino Enjoy y trabajamos con hoteles. ¿Tienen eventos próximos donde busquen entretenimiento en vivo?</div>
+      </div>
+    </div>
+
+    <div class="dm-card">
+      <div class="dm-niche">🏛️ Municipios</div>
+      <div class="dm-block">
+        <div class="dm-label">Email / DM</div>
+        <div class="dm-bubble">Hola [nombre], somos 3 son Multitud, trío musical chileno con 5 años de trayectoria. Nos gustaría participar en la programación cultural de [Municipio]. ¿Cuál es el proceso para postular?</div>
+      </div>
+    </div>
+
+    <div class="dm-card">
+      <div class="dm-niche">🎓 Educación</div>
+      <div class="dm-block">
+        <div class="dm-label">DM / Email</div>
+        <div class="dm-bubble">Hola [nombre], somos 3 son Multitud — banda en vivo con 5 años de experiencia. ¿[Universidad X] tiene semana universitaria o graduaciones donde busquen entretenimiento en vivo?</div>
+      </div>
+    </div>
+
+    <div class="dm-card" style="border-color: rgba(255,215,0,0.2); background: rgba(255,215,0,0.04);">
+      <div class="dm-niche" style="color:#aaa;">🔄 Follow-up universal</div>
+      <div class="dm-block">
+        <div class="dm-label">7 días sin respuesta</div>
+        <div class="dm-bubble">Hola [nombre], te escribí hace unos días de parte de 3 son Multitud. No quiero ser pesado — si no es el momento o no es lo que buscan, está perfecto. Pero si hay un mejor canal para contactarlos, me avisas. ¡Gracias!</div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<hr class="divider">
+
+<!-- ==================== COMANDOS ==================== -->
+<section class="section" id="comandos">
+  <div class="section-title">Comandos del CRM</div>
+  <div class="section-sub">Referencia rápida — ejecutar desde la carpeta <code style="color:var(--blue)">agent/</code></div>
+
+  <div style="display:flex; flex-direction:column; gap:14px;">
+
+    <div>
+      <div style="font-size:0.78rem; color:var(--muted); text-transform:uppercase; letter-spacing:0.06em; margin-bottom:8px;">Cargar prospectos al CRM</div>
+      <div class="cmd-block"><span class="cmd-cmd">python</span> seeds/cargar_seeds.py
+<span class="cmd-comment"># solo preview (no guarda):</span>
+<span class="cmd-cmd">python</span> seeds/cargar_seeds.py --preview
+<span class="cmd-comment"># solo un nicho:</span>
+<span class="cmd-cmd">python</span> seeds/cargar_seeds.py --tipo casino</div>
+    </div>
+
+    <div>
+      <div style="font-size:0.78rem; color:var(--muted); text-transform:uppercase; letter-spacing:0.06em; margin-bottom:8px;">Generar correos con IA</div>
+      <div class="cmd-block"><span class="cmd-cmd">python</span> main.py generar --tipo productora
+<span class="cmd-cmd">python</span> main.py generar --tipo boda
+<span class="cmd-cmd">python</span> main.py generar --tipo empresa
+<span class="cmd-cmd">python</span> main.py generar --tipo hotel
+<span class="cmd-cmd">python</span> main.py generar --tipo municipal
+<span class="cmd-cmd">python</span> main.py generar --tipo educacion
+<span class="cmd-cmd">python</span> main.py generar --tipo casino</div>
+    </div>
+
+    <div>
+      <div style="font-size:0.78rem; color:var(--muted); text-transform:uppercase; letter-spacing:0.06em; margin-bottom:8px;">Ver y marcar correos</div>
+      <div class="cmd-block"><span class="cmd-cmd">python</span> main.py ver 5
+<span class="cmd-cmd">python</span> main.py marcar 5 --enviado
+<span class="cmd-cmd">python</span> main.py marcar 5 --respondido</div>
+    </div>
+
+    <div>
+      <div style="font-size:0.78rem; color:var(--muted); text-transform:uppercase; letter-spacing:0.06em; margin-bottom:8px;">Agregar prospecto manual</div>
+      <div class="cmd-block"><span class="cmd-cmd">python</span> main.py add \
+  --nombre <span style="color:#a5f3fc">"Hotel XYZ"</span> \
+  --tipo hotel \
+  --email <span style="color:#a5f3fc">contacto@hotel.cl</span> \
+  --contacto <span style="color:#a5f3fc">"María González"</span> \
+  --cargo <span style="color:#a5f3fc">"Coordinadora de Eventos"</span> \
+  --ciudad Santiago</div>
+    </div>
+
+    <div>
+      <div style="font-size:0.78rem; color:var(--muted); text-transform:uppercase; letter-spacing:0.06em; margin-bottom:8px;">Métricas y seguimientos</div>
+      <div class="cmd-block"><span class="cmd-cmd">python</span> main.py stats
+<span class="cmd-cmd">python</span> main.py seguimientos</div>
+    </div>
+
+    <div>
+      <div style="font-size:0.78rem; color:var(--muted); text-transform:uppercase; letter-spacing:0.06em; margin-bottom:8px;">Fan-cam (levantar durante el show)</div>
+      <div class="cmd-block"><span class="cmd-comment"># instalar una vez:</span>
+pip install flask qrcode[pil]
+
+<span class="cmd-comment"># levantar servidor:</span>
+cd fan_app && <span class="cmd-cmd">python</span> server.py
+
+<span class="cmd-comment"># en otra terminal — generar QR con HTTPS (ngrok):</span>
+ngrok http 5001
+<span class="cmd-cmd">python</span> generar_qr.py --url https://xxxx.ngrok.io
+
+<span class="cmd-comment"># ver solicitudes de canciones:</span>
+<span style="color:#a5f3fc">http://localhost:5001/api/solicitudes?token=banda3sm</span></div>
+    </div>
+
+  </div>
+</section>
+
+<div style="height:60px;"></div>
+
+<script>
+function toggle(head) {
+  const body = head.nextElementSibling;
+  const chevron = head.querySelector('.chevron');
+  const open = body.classList.toggle('open');
+  chevron.style.transform = open ? 'rotate(180deg)' : '';
+}
+
+// Active nav link on scroll
+const sections = ['plan','reels','llamadas','dm','comandos'];
+const navLinks = {};
+sections.forEach(id => { navLinks[id] = document.querySelector(`nav a[href="#${id}"]`); });
+
+const obs = new IntersectionObserver(entries => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      sections.forEach(id => navLinks[id] && navLinks[id].classList.remove('active'));
+      if (navLinks[e.target.id]) navLinks[e.target.id].classList.add('active');
+    }
+  });
+}, { rootMargin: '-30% 0px -60% 0px' });
+
+sections.forEach(id => { const el = document.getElementById(id); if (el) obs.observe(el); });
+</script>
+
+</body>
+</html>
