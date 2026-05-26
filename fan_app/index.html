@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>3 son Multitud — Pide tu canción</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background: #0a0a0a;
+      color: #fff;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, sans-serif;
+      min-height: 100dvh;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      overflow-x: hidden;
+    }
+
+    .app {
+      width: 100%;
+      max-width: 430px;
+      min-height: 100dvh;
+      display: flex;
+      flex-direction: column;
+      padding: 0 20px 40px;
+    }
+
+    /* --- SCREENS --- */
+    .screen { display: none; flex-direction: column; align-items: center; flex: 1; padding-top: 48px; gap: 20px; }
+    .screen.active { display: flex; }
+
+    /* --- LOGO --- */
+    .logo { text-align: center; }
+    .logo h1 { font-size: 2rem; font-weight: 900; color: #FFD700; letter-spacing: -0.03em; }
+    .logo p  { font-size: 0.85rem; color: #666; margin-top: 4px; }
+
+    /* --- TAGLINE --- */
+    .tagline { text-align: center; font-size: 1.25rem; font-weight: 700; line-height: 1.4; }
+    .tagline span { font-weight: 400; font-size: 1rem; color: #888; display: block; margin-top: 6px; }
+
+    /* --- INPUTS --- */
+    .field { width: 100%; }
+    .field label { font-size: 0.78rem; color: #666; letter-spacing: 0.05em; text-transform: uppercase; display: block; margin-bottom: 6px; }
+    input[type=text] {
+      width: 100%; padding: 15px 16px;
+      background: #161616; border: 1px solid #2a2a2a; border-radius: 12px;
+      color: #fff; font-size: 1rem; outline: none; transition: border-color 0.2s;
+    }
+    input[type=text]:focus { border-color: #FFD700; }
+    input::placeholder { color: #444; }
+
+    /* --- BUTTONS --- */
+    .btn {
+      width: 100%; padding: 17px; border: none; border-radius: 14px;
+      font-size: 1.05rem; font-weight: 700; cursor: pointer;
+      transition: transform 0.1s, opacity 0.15s;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .btn:active { transform: scale(0.97); }
+    .btn-gold    { background: #FFD700; color: #000; }
+    .btn-dark    { background: #1a1a1a; color: #ccc; border: 1px solid #2a2a2a; }
+    .btn-ig      { background: linear-gradient(135deg,#f09433,#e6683c,#dc2743,#cc2366,#bc1888); color: #fff; }
+
+    /* --- CAMERA SCREEN --- */
+    .viewfinder {
+      position: relative; width: 100%;
+      aspect-ratio: 3/4; border-radius: 18px; overflow: hidden;
+      background: #111; flex-shrink: 0;
+    }
+    #video { width: 100%; height: 100%; object-fit: cover; transform: scaleX(-1); display: block; }
+    #countdown {
+      position: absolute; inset: 0;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 6rem; font-weight: 900; color: #FFD700;
+      text-shadow: 0 0 30px rgba(255,215,0,0.6);
+      pointer-events: none; opacity: 0;
+      transition: opacity 0.15s;
+    }
+    #countdown.show { opacity: 1; }
+    #canvas { display: none; }
+
+    /* --- PREVIEW SCREEN --- */
+    #preview-img {
+      width: 100%; border-radius: 18px; display: block;
+    }
+    .song-badge {
+      width: 100%; padding: 14px 16px;
+      background: rgba(255,215,0,0.08); border: 1px solid rgba(255,215,0,0.25);
+      border-radius: 12px; text-align: center;
+      font-size: 0.95rem; color: #FFD700; font-weight: 600;
+      display: none;
+    }
+    .actions { width: 100%; display: flex; flex-direction: column; gap: 11px; }
+    .hint { font-size: 0.78rem; color: #555; text-align: center; }
+  </style>
+</head>
+<body>
+<div class="app">
+
+  <!-- SCREEN 1: Formulario -->
+  <section class="screen active" id="s-form">
+    <div class="logo">
+      <h1>3 son Multitud</h1>
+      <p>Casino Enjoy Santiago &nbsp;&middot;&nbsp; En vivo esta noche</p>
+    </div>
+
+    <div class="tagline">
+      ¿Qué canción quieres escuchar? 🎸
+      <span>Pídela, sácate una foto y te etiquetamos</span>
+    </div>
+
+    <div class="field">
+      <label>Tu nombre</label>
+      <input type="text" id="inp-nombre" placeholder="Opcional" autocomplete="off" />
+    </div>
+
+    <div class="field">
+      <label>Canción que quieres escuchar 🎵</label>
+      <input type="text" id="inp-cancion" placeholder="Escribe el nombre de la canción" autocomplete="off" />
+    </div>
+
+    <button class="btn btn-gold" onclick="irCamara()">📸 Sacar mi foto</button>
+    <p class="hint">Tu foto se descarga en tu celular · @3smultitud</p>
+  </section>
+
+  <!-- SCREEN 2: Cámara -->
+  <section class="screen" id="s-camara">
+    <div class="logo"><h1>3 son Multitud</h1></div>
+    <div class="viewfinder">
+      <video id="video" autoplay playsinline muted></video>
+      <div id="countdown"></div>
+    </div>
+    <canvas id="canvas"></canvas>
+    <button class="btn btn-gold" id="btn-foto" onclick="iniciarConteo()">📸 Tomar foto (3–2–1)</button>
+    <button class="btn btn-dark" onclick="volver()">← Volver</button>
+  </section>
+
+  <!-- SCREEN 3: Preview -->
+  <section class="screen" id="s-preview">
+    <div class="logo"><h1>3 son Multitud</h1></div>
+    <div class="song-badge" id="song-badge"></div>
+    <img id="preview-img" src="" alt="Tu foto con 3SM" />
+    <div class="actions">
+      <button class="btn btn-gold" onclick="descargar()">&#8964; Guardar foto</button>
+      <button class="btn btn-ig"  onclick="compartir()">📤 Compartir en Instagram</button>
+      <button class="btn btn-dark" onclick="otraFoto()">&#8635; Tomar otra foto</button>
+    </div>
+    <p class="hint">¡Etíquetanos en tu historia! @3smultitud 🎸</p>
+  </section>
+
+</div>
+<script>
+'use strict';
+let mediaStream = null;
+let photoUrl    = null;
+let nombre      = '';
+let cancion     = '';
+
+function mostrar(id) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+}
+
+async function irCamara() {
+  nombre  = document.getElementById('inp-nombre').value.trim();
+  cancion = document.getElementById('inp-cancion').value.trim();
+  mostrar('s-camara');
+  try {
+    mediaStream = await navigator.mediaDevices.getUserMedia({
+      video: { facingMode: 'user', width: { ideal: 1280 }, height: { ideal: 1706 } },
+      audio: false
+    });
+    document.getElementById('video').srcObject = mediaStream;
+  } catch {
+    alert('No se pudo acceder a la cámara.\nPor favor permite el acceso e intenta de nuevo.');
+    mostrar('s-form');
+  }
+}
+
+function iniciarConteo() {
+  const btn = document.getElementById('btn-foto');
+  btn.disabled = true;
+  const el = document.getElementById('countdown');
+  let n = 3;
+  el.textContent = n;
+  el.classList.add('show');
+  const t = setInterval(() => {
+    n--;
+    if (n > 0) { el.textContent = n; }
+    else {
+      clearInterval(t);
+      el.classList.remove('show');
+      capturar();
+      btn.disabled = false;
+    }
+  }, 1000);
+}
+
+function capturar() {
+  const video  = document.getElementById('video');
+  const canvas = document.getElementById('canvas');
+  const w = video.videoWidth  || 720;
+  const h = video.videoHeight || 960;
+  canvas.width = w; canvas.height = h;
+  const ctx = canvas.getContext('2d');
+
+  // Mirror (selfie)
+  ctx.save();
+  ctx.translate(w, 0);
+  ctx.scale(-1, 1);
+  ctx.drawImage(video, 0, 0, w, h);
+  ctx.restore();
+
+  overlay(ctx, w, h);
+
+  photoUrl = canvas.toDataURL('image/jpeg', 0.92);
+
+  if (mediaStream) { mediaStream.getTracks().forEach(t => t.stop()); mediaStream = null; }
+
+  // Show preview
+  document.getElementById('preview-img').src = photoUrl;
+
+  const badge = document.getElementById('song-badge');
+  if (cancion) {
+    const who = nombre ? `¡Gracias ${nombre}! ` : '¡Gracias! ';
+    badge.textContent = who + `Vamos a tocar "${cancion}" 🎵`;
+    badge.style.display = 'block';
+    guardarSolicitud(nombre, cancion);
+  } else {
+    badge.style.display = 'none';
+  }
+
+  mostrar('s-preview');
+}
+
+function overlay(ctx, w, h) {
+  const bH = Math.round(h * 0.13);
+
+  // Top gradient
+  const gt = ctx.createLinearGradient(0, 0, 0, bH);
+  gt.addColorStop(0, 'rgba(0,0,0,0.82)');
+  gt.addColorStop(1, 'rgba(0,0,0,0)');
+  ctx.fillStyle = gt;
+  ctx.fillRect(0, 0, w, bH);
+
+  // Band name (gold)
+  ctx.fillStyle = '#FFD700';
+  ctx.font = `bold ${Math.round(w * 0.076)}px -apple-system,sans-serif`;
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'top';
+  ctx.fillText('3 son Multitud', w / 2, Math.round(bH * 0.14));
+
+  // Bottom gradient
+  const gb = ctx.createLinearGradient(0, h - bH, 0, h);
+  gb.addColorStop(0, 'rgba(0,0,0,0)');
+  gb.addColorStop(1, 'rgba(0,0,0,0.82)');
+  ctx.fillStyle = gb;
+  ctx.fillRect(0, h - bH, w, bH);
+
+  // Casino label (white)
+  ctx.fillStyle = '#ffffff';
+  ctx.font = `${Math.round(w * 0.044)}px -apple-system,sans-serif`;
+  ctx.textBaseline = 'alphabetic';
+  ctx.fillText('Casino Enjoy Santiago', w / 2, h - Math.round(bH * 0.42));
+
+  // Handle (gold)
+  ctx.fillStyle = '#FFD700';
+  ctx.font = `bold ${Math.round(w * 0.038)}px -apple-system,sans-serif`;
+  ctx.fillText('@3smultitud', w / 2, h - Math.round(bH * 0.15));
+}
+
+async function guardarSolicitud(nom, can) {
+  try {
+    await fetch('/api/solicitud', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ nombre: nom, cancion: can })
+    });
+  } catch { /* servidor opcional */ }
+}
+
+function descargar() {
+  const a = document.createElement('a');
+  a.href = photoUrl;
+  a.download = '3sonMultitud.jpg';
+  a.click();
+}
+
+async function compartir() {
+  const caption = `🎸 Esta noche en Casino Enjoy Santiago con @3smultitud!\n\n#3sonMultitud #CasinoEnjoy #BandaEnVivo`;
+  if (navigator.share) {
+    try {
+      const blob = await (await fetch(photoUrl)).blob();
+      const file = new File([blob], '3sm.jpg', { type: 'image/jpeg' });
+      await navigator.share({ files: [file], text: caption });
+      return;
+    } catch (e) { if (e.name === 'AbortError') return; }
+  }
+  descargar();
+  alert('Foto guardada ❤️\nSúbela a Instagram y etiqúetanos @3smultitud!');
+}
+
+function otraFoto() {
+  photoUrl = null;
+  document.getElementById('preview-img').src = '';
+  irCamara();
+}
+
+function volver() {
+  if (mediaStream) { mediaStream.getTracks().forEach(t => t.stop()); mediaStream = null; }
+  mostrar('s-form');
+}
+</script>
+</body>
+</html>
