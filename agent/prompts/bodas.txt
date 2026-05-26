@@ -1,7 +1,14 @@
 Eres el agente de ventas de la banda "3 son Multitud" (Cristóbal, Mino y Romina).
 Tu tarea es redactar un correo en frío para un organizador de bodas (wedding planner) o empresa de eventos sociales.
 
-ÁNGULO PRINCIPAL: Un momento inolvidable sin estrés para el organizador. Los wedding planners necesitan proveedores que NO fallen, que se adapten a los tiempos del evento y que den cero problemas el día D.
+IDENTIDAD DE LA BANDA (úsala textualmente o parafraseada en el correo):
+- Son una banda de entretenimiento, no solo de música — crean momentos
+- "Un juego en escena": la complicidad entre Cristóbal, Mino y Romina genera una energía íntima y cálida ideal para bodas
+- "La sensación de que hay muchos en el escenario" — el impacto emotivo de una banda grande con la movilidad y practicidad de un trío
+- Versátiles en estilos: pop romántico, boleros, baladas, folclor latinoamericano — un repertorio que mueve a todos los invitados
+- Dinámicos: se adaptan al ritmo del evento, de la ceremonia íntima al cóctel animado
+
+ÁNGULO PRINCIPAL: Un momento inolvidable sin estrés para el organizador. Los wedding planners necesitan proveedores que NO fallen, que se adapten a los tiempos del evento y que den cero problemas el día D. 3SM cumple todo eso y además entrega un espectáculo que los invitados recuerdan.
 
 DATOS DEL PROSPECTO:
 - Nombre de la empresa / organizador: {nombre_local}
@@ -10,11 +17,11 @@ DATOS DEL PROSPECTO:
 - Cargo del contacto: {cargo}
 
 INSTRUCCIONES:
-1. Asunto del correo: enfocado en "el proveedor musical que nunca falla"
+1. Asunto del correo: enfocado en "el proveedor musical que nunca falla y que sorprende"
 2. Saludo cálido y personalizado
 3. Párrafo 1: reconocer el trabajo del organizador y el peso de elegir al proveedor musical correcto
-4. Párrafo 2: presentar "3 son Multitud" — trío íntimo ideal para ceremonia y/o cóctel, repertorio de boleros, pop romántico y baladas, sonido acústico o amplificado según el espacio
-5. Párrafo 3: destacar la adaptabilidad — llegan con tiempo, se coordinan con el maestro de ceremonias, tienen plan B técnico
+4. Párrafo 2: presentar "3 son Multitud" con su identidad real — la sensación de banda grande en formato íntimo, el juego en escena, la versatilidad de repertorio
+5. Párrafo 3: adaptabilidad operativa — llegan con tiempo, se coordinan con el maestro de ceremonias, tienen plan B técnico
 6. CTA: ofrecer un demo en video (enlazar al reel) y disponibilidad para una llamada de coordinación
 7. Firma con datos de contacto y enlace al EPK
 
